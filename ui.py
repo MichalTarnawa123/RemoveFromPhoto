@@ -186,6 +186,10 @@ def setup_ui(self):
     self.status_label.setFixedSize(20, 20)
     self.status_label.setStyleSheet(f"background: {helpers.COLORS['status_idle']}; border-radius: 10px;")
     toolbar.addWidget(self.status_label)
+    #===INFORMACJA O STATUSIE===#
+    self.status_message = QLabel("")
+    self.status_message.setStyleSheet("color: white; font-weight: bold;")
+    toolbar.addWidget(self.status_message)
     #===CANVA===#
     #=== POTESTUJCIE NA WIĘKSZYCH OBRAZKACH NP. 16K===#
     self.scene = QGraphicsScene()

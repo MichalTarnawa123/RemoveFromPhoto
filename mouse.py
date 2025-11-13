@@ -11,6 +11,11 @@ def mousePressEvent(self, event):
     self.points = [(x, y)]
     self.last_brush_pos = None
     self.brush_update_counter = 0
+    try:
+        self.status_message.setText("")
+        self.status_label.setStyleSheet(f"background: {helpers.COLORS['status_idle']}; border-radius: 10px;")
+    except Exception:
+        pass
     if self.tool_combo.currentData() == 1:
         helpers.update_brush_mask(self, x, y, update_display=True)
         

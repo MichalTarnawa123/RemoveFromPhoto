@@ -10,6 +10,7 @@ from criminisi import criminisi_inpaint
 #===stałe===#
 COLORS = {
     "status_idle": "#FFFF00",
+    "status_done": "#00AA00",
     "status_processing": "#FF4500",
     "brush_cursor": "#00AA00",
     "toolbar_gradient_start": "#000000",
@@ -158,6 +159,12 @@ def open_image(self):
             self.mask = Image.new("L", self.image.size, 0)
             self.history.clear()
             draw_image(self)
+            # reset status
+            try:
+                self.status_label.setStyleSheet(f"background: {COLORS['status_idle']}; border-radius: 10px;")
+                self.status_message.setText("")
+            except Exception:
+                pass
             if self.tool_combo.currentData() == 1:
                 self.view.viewport().setCursor(create_brush_cursor(self))
             else:
@@ -188,14 +195,18 @@ def erase_selection(self):
     self.history.append((self.image.copy(), self.mask.copy()))
     #===ZMIANA STATUSU PRZETWARZANIA===#
     self.status_label.setStyleSheet(f"background: {COLORS['status_processing']}; border-radius: 10px;")
+    self.status_message.setText("⏳ Przetwarzanie...")
     QApplication.processEvents()
     #===LOGIKA INPAINTNGU(W.I.P)===#
     if self.fill_combo.currentData() == 2:
         QMessageBox.warning(self, "Info", "SD + ControlNet nie jest jeszcze zaimplementowane.")
+        self.status_label.setStyleSheet(f"background: {COLORS['status_idle']}; border-radius: 10px;")
+        self.status_message.setText("Gotowy")
     else:
         _local_inpaint_and_update(self)
-    #===ZMIANA STATUSU===#
-    self.status_label.setStyleSheet(f"background: {COLORS['status_idle']}; border-radius: 10px;")
+        #===ZMIANA STATUSU===#
+        self.status_label.setStyleSheet(f"background: {COLORS['status_done']}; border-radius: 10px;")
+        self.status_message.setText("✓ Gotowy")
     
 def _local_inpaint_and_update(self):
     id_ = self.fill_combo.currentData() 
@@ -252,6 +263,12 @@ def undo(self):
     if self.history:
         self.image, self.mask = self.history.pop()
         draw_image(self)
+        # reset status
+        try:
+            self.status_label.setStyleSheet(f"background: {COLORS['status_idle']}; border-radius: 10px;")
+            self.status_message.setText("")
+        except Exception:
+            pass
     else:
         QMessageBox.information(self, "Info", "Brak operacji do cofnięcia.")
         
@@ -260,5 +277,11 @@ def reset_selection(self):
     if self.image:
         self.mask = Image.new("L", self.image.size, 0)
         draw_image(self)
+        # reset status
+        try:
+            self.status_label.setStyleSheet(f"background: {COLORS['status_idle']}; border-radius: 10px;")
+            self.status_message.setText("")
+        except Exception:
+            pass
     else:
         QMessageBox.warning(self, "Błąd", "Brak obrazu.")
