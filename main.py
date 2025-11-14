@@ -5,6 +5,7 @@ from PyQt5.QtCore import pyqtSlot, QEvent
 
 #===IMPORTY Z INNYCH PLIKÓW===#
 import helpers
+import settings
 from shortcuts import SHORTCUTS
 from mouse import mousePressEvent, mouseMoveEvent, mouseReleaseEvent, enterEvent_logic, leaveEvent_logic
 from ui import setup_ui, RoundedButton
@@ -25,20 +26,27 @@ class LassoEraser(QMainWindow):
         #=== ===#
         self.last_brush_pos = None
         self.brush_update_counter = 0
+
+        #Miejsce na integracje z SD API->
+
+
         self.setup_ui()
         self.setup_shortcuts()
+
     def setup_ui(self):
-        setup_ui(self)
+        setup_ui(self)  #Funkcja z pliku ui.py
+
     def setup_shortcuts(self):
         for key, method_name in SHORTCUTS.items():
             action = QAction(self)
             action.setShortcut(QKeySequence(key))
             action.triggered.connect(getattr(self, method_name))
             self.addAction(action)
+
     def eventFilter(self, source, event):
         if source == self.view.viewport():
             if event.type() == QEvent.MouseButtonPress:
-                mousePressEvent(self, event)
+                mousePressEvent(self, event)  #Funkcja z pliku mouse
                 return True
             elif event.type() == QEvent.MouseMove:
                 mouseMoveEvent(self, event)
@@ -53,39 +61,56 @@ class LassoEraser(QMainWindow):
     def leaveEvent(self, event):
         leaveEvent_logic(self, event)
         super().leaveEvent(event)
+
+
     @pyqtSlot()
     def set_lasso(self):
         self.tool_combo.setCurrentIndex(0)
         self.on_tool_changed()
+
     @pyqtSlot()
     def set_brush(self):
         self.tool_combo.setCurrentIndex(1)
         self.on_tool_changed()
+
     def draw_image(self):
         helpers.draw_image(self)
     def update_brush_mask(self, x, y, update_display=False):
         helpers.update_brush_mask(self, x, y, update_display)
     def update_brush_display(self):
         helpers.update_brush_display(self)
+
     def on_brush_size_changed(self, value):
         helpers.on_brush_size_changed(self, value)
     def update_scale(self, val):
         helpers.update_scale(self, val)
     def on_tool_changed(self, index=None):
         helpers.on_tool_changed(self, index)
+
+
+    # Settings
+    def open_settings(self):
+        settings.open_settings(self)
+    def save_settings(self):
+        settings.save_settings(self,dialog)
+
+
     def open_image(self):
         helpers.open_image(self)
     def save_image(self):
         helpers.save_image(self)
+
     def erase_selection(self):
         helpers.erase_selection(self)
     def _local_inpaint_and_update(self):
         helpers._local_inpaint_and_update(self)
+
     def undo(self):
         helpers.undo(self)
     def reset_selection(self):
         helpers.reset_selection(self)
         
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = LassoEraser()

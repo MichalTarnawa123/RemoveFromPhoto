@@ -21,9 +21,11 @@ def pil_to_base64(img_pil, fmt="PNG"):
     buf = io.BytesIO()
     img_pil.save(buf, format=fmt)
     return base64.b64encode(buf.getvalue()).decode("utf-8")
+
 def base64_to_pil(b64str):
     data = base64.b64decode(b64str)
     return Image.open(io.BytesIO(data)).convert("RGB")
+
 def get_timestamp():
     return datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
@@ -39,6 +41,8 @@ def pil_to_qimage(pil_img):
         data = pil_img.tobytes("raw", "RGBA")
         qimg = QImage(data, pil_img.width, pil_img.height, pil_img.width * 4, QImage.Format_RGBA8888)
     return qimg
+
+
 
 def draw_image(self):
     if not self.image:
@@ -259,6 +263,7 @@ def telea_inpaint(img, mask):
     return Image.fromarray(filled_np)
 
 def undo(self):
+    #Cofanie
     from PyQt5.QtWidgets import QMessageBox
     if self.history:
         self.image, self.mask = self.history.pop()
