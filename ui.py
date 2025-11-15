@@ -40,7 +40,7 @@ class RoundedButton(QPushButton):
                 );
             }
         """)
-        
+       
 def setup_ui(self):
     toolbar = QToolBar()
     toolbar.setStyleSheet(f"""
@@ -143,7 +143,8 @@ def setup_ui(self):
         ("Usuń i wypełnij", self.erase_selection),
         ("Zapisz", self.save_image),
         ("Reset", self.reset_selection),
-        ("Cofnij", self.undo)
+        ("Cofnij", self.undo),
+        ("Ustawienia", self.open_settings)
     ]
     for text, func in actions:
         btn = RoundedButton(text)

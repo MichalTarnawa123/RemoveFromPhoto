@@ -28,8 +28,8 @@ class LassoEraser(QMainWindow):
         self.brush_update_counter = 0
 
         #Miejsce na integracje z SD API->
-
-
+        #zrobiłem osobny plik sd.py
+        
         self.setup_ui()
         self.setup_shortcuts()
 

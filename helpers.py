@@ -7,6 +7,7 @@ import cv2 as cv
 from PyQt5.QtGui import QPixmap, QPen, QColor, QBrush, QImage, QPainter, QCursor
 from PyQt5.QtCore import Qt
 from criminisi import criminisi_inpaint
+
 #===stałe===#
 COLORS = {
     "status_idle": "#FFFF00",
@@ -16,6 +17,7 @@ COLORS = {
     "toolbar_gradient_start": "#000000",
     "toolbar_gradient_end": "#FFD700"
 }
+
 #===Funckje pomocnicze===#
 def pil_to_base64(img_pil, fmt="PNG"):
     buf = io.BytesIO()
@@ -42,8 +44,6 @@ def pil_to_qimage(pil_img):
         qimg = QImage(data, pil_img.width, pil_img.height, pil_img.width * 4, QImage.Format_RGBA8888)
     return qimg
 
-
-
 def draw_image(self):
     if not self.image:
         return
@@ -65,7 +65,6 @@ def draw_image(self):
         self.scene.removeItem(line)
     self.lasso_lines.clear()
 
-    
 def create_brush_cursor(self):
     size = self.brush_slider.value()
     cursor_size = max(size + 4, 16)
@@ -85,7 +84,6 @@ def create_brush_cursor(self):
     painter.drawLine(center, center - cross_size, center, center + cross_size)
     painter.end()
     return QCursor(pixmap, center, center)
-
 
 def update_brush_mask(self, x, y, update_display=False):
     r = self.brush_slider.value() // 2
@@ -113,7 +111,6 @@ def update_brush_mask(self, x, y, update_display=False):
     if update_display:
         update_brush_display(self)
 
-        
 def update_brush_display(self):
     if not self.image or not self.mask:
         return
@@ -130,7 +127,6 @@ def update_brush_display(self):
     pixmap = QPixmap.fromImage(qimg)
     self.pixmap_item.setPixmap(pixmap)
 
-    
 def on_brush_size_changed(self, value):
     self.brush_value_label.setText(str(value))
     if self.tool_combo.currentData() == 1 and self.image:
@@ -181,7 +177,7 @@ def save_image(self):
     if not self.image:
         QMessageBox.warning(self, "Błąd", "Brak obrazu do zapisania.")
         return
-    default_name = f"wynik_{get_timestamp()}.png"
+    default_name = f"wynik_{get_timestamp()}.png" if self.saved_save_with_timestamp else "wynik.png"
     path, _ = QFileDialog.getSaveFileName(self, "Zapisz obraz", default_name, "PNG (*.png);;JPG (*.jpg)")
     if path:
         self.image.save(path)
@@ -195,22 +191,31 @@ def erase_selection(self):
     if not self.mask or not any(px > 0 for px in self.mask.getdata()):
         QMessageBox.warning(self, "Błąd", "Zaznacz obszar do usunięcia.")
         return
+    
     #===DODANIE DO HISTORII===#
     self.history.append((self.image.copy(), self.mask.copy()))
+    
     #===ZMIANA STATUSU PRZETWARZANIA===#
     self.status_label.setStyleSheet(f"background: {COLORS['status_processing']}; border-radius: 10px;")
     self.status_message.setText("⏳ Przetwarzanie...")
     QApplication.processEvents()
-    #===LOGIKA INPAINTNGU(W.I.P)===#
+    
+    #===LOGIKA INPAINTNGU===#
     if self.fill_combo.currentData() == 2:
-        QMessageBox.warning(self, "Info", "SD + ControlNet nie jest jeszcze zaimplementowane.")
-        self.status_label.setStyleSheet(f"background: {COLORS['status_idle']}; border-radius: 10px;")
-        self.status_message.setText("Gotowy")
+        if self.sd_connected:
+            import sd
+            sd.sd_inpaint_with_controlnet(self)
+        else:
+            QMessageBox.warning(self, "Info", "Najpierw połącz się z SD (Ustawienia -> Połącz z SD)")
+            self.status_label.setStyleSheet(f"background: {COLORS['status_idle']}; border-radius: 10px;")
+            self.status_message.setText("Gotowy")
+            return
     else:
         _local_inpaint_and_update(self)
-        #===ZMIANA STATUSU===#
-        self.status_label.setStyleSheet(f"background: {COLORS['status_done']}; border-radius: 10px;")
-        self.status_message.setText("✓ Gotowy")
+    
+    #===ZMIANA STATUSU===#
+    self.status_label.setStyleSheet(f"background: {COLORS['status_done']}; border-radius: 10px;")
+    self.status_message.setText("✓ Gotowy")
     
 def _local_inpaint_and_update(self):
     id_ = self.fill_combo.currentData() 
@@ -247,7 +252,6 @@ def neighbor_inpaint(img, mask):
     return img
 
 def empty_inpaint(img, mask):
-    
     px = img.load()
     mp = mask.load()
     for y in range(img.height):
@@ -268,7 +272,7 @@ def undo(self):
     if self.history:
         self.image, self.mask = self.history.pop()
         draw_image(self)
-        # reset status
+        # reset statusu
         try:
             self.status_label.setStyleSheet(f"background: {COLORS['status_idle']}; border-radius: 10px;")
             self.status_message.setText("")
