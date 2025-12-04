@@ -54,6 +54,7 @@ def base64_to_pil(b64str):
 def sd_inpaint_with_controlnet(window, image_bytes: bytes = None, mask_bytes: bytes = None):
     try:
         #Pobranie parametrów z ustawień
+        # Poniższe do refaktoryzacji mając na uwadze atrybuty klasy głównej main
         prompt = getattr(window, 'saved_prompt', "usuń obiekt i wypełnij tłem naturalnie")
         negative_prompt = getattr(window, 'saved_negative_prompt', "niska jakość, rozmycie, artefakty")
         steps = getattr(window, 'saved_steps', 25)

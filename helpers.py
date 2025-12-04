@@ -44,6 +44,7 @@ def bytes_to_mask_image(data: bytes):
     img = Image.open(io.BytesIO(data)).convert("L")
     return img
 
+
 def base64_to_pil(b64str):
     data = base64.b64decode(b64str)
     return Image.open(io.BytesIO(data)).convert("RGB")
@@ -84,6 +85,7 @@ def draw_image(self):
     for line in self.lasso_lines:
         self.scene.removeItem(line)
     self.lasso_lines.clear()
+
 
 def create_brush_cursor(self):
     size = self.brush_slider.value()
@@ -130,6 +132,7 @@ def update_brush_mask(self, x, y, update_display=False):
     self.last_brush_pos = (x, y)
     if update_display:
         update_brush_display(self)
+
 
 def update_brush_display(self):
     if not self.image or not self.mask:
@@ -237,7 +240,8 @@ def set_image_and_mask_from_bytes(self, image_bytes: bytes, mask_bytes: bytes):
     """Funkcja pomocnicza: ustawia jednocześnie obraz i maskę z dostarczonych bajtów."""
     set_image_from_bytes(self, image_bytes)
     set_mask_from_bytes(self, mask_bytes)
-            
+
+
 def save_image(self):
     from PyQt5.QtWidgets import QFileDialog, QMessageBox
     if not self.image:
@@ -301,6 +305,7 @@ def _local_inpaint_and_update(self):
     self.mask = Image.new("L", self.image.size, 0)
     draw_image(self)
     
+
 def neighbor_inpaint(img, mask):
     pixels = img.load()
     mask_pixels = mask.load()

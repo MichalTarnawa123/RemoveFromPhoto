@@ -138,6 +138,7 @@ def setup_ui(self):
     """)
     toolbar.addWidget(self.fill_combo)
     toolbar.addSeparator()
+
     #===BUTTONY ===#
     actions = [
         ("Otwórz", self.open_image),
@@ -151,6 +152,7 @@ def setup_ui(self):
         btn = RoundedButton(text)
         btn.clicked.connect(func)
         toolbar.addWidget(btn)
+
     #===SUWAK PĘDZLNA===#
     brush_container = QWidget()
     brush_layout = QHBoxLayout(brush_container)
@@ -167,6 +169,7 @@ def setup_ui(self):
     self.brush_slider.valueChanged.connect(self.on_brush_size_changed)
     brush_layout.addWidget(self.brush_slider)
     toolbar.addWidget(brush_container)
+
     #===SUWAK ROZMIARU===#
     scale_container = QWidget()
     scale_layout = QHBoxLayout(scale_container)
@@ -183,15 +186,20 @@ def setup_ui(self):
     self.scale_slider.valueChanged.connect(self.update_scale)
     scale_layout.addWidget(self.scale_slider)
     toolbar.addWidget(scale_container)
+
+
     #===STATUS===#
     self.status_label = QLabel()
     self.status_label.setFixedSize(20, 20)
     self.status_label.setStyleSheet(f"background: {helpers.COLORS['status_idle']}; border-radius: 10px;")
     toolbar.addWidget(self.status_label)
+
     #===INFORMACJA O STATUSIE===#
     self.status_message = QLabel("")
     self.status_message.setStyleSheet("color: white; font-weight: bold;")
     toolbar.addWidget(self.status_message)
+
+
     #===CANVA===#
     #=== POTESTUJCIE NA WIĘKSZYCH OBRAZKACH NP. 16K===#
     self.scene = QGraphicsScene()
