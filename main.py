@@ -31,6 +31,23 @@ class LassoEraser(QMainWindow):
         self.brush_update_counter = 0
 
         #Miejsce na integracje z SD API->
+        #===================================================================
+        # SD API - atrybuty do przetestowania
+        self.sd_api_url = "http://127.0.0.1:7860"
+        self.sd_connected = False
+        self.available_models = []
+        self.controlnet_models = []
+
+        # Preprocesory
+        self.controlnet_preprocessors = [
+            "none", "inpaint", "inpaint_global", "canny", "depth", "openpose",
+            "scribble", "mlsd", "hed", "softedge", "lineart", "reference_only"
+        ]
+
+        # Domyślne ustawienia
+        self.saved_prompt = "usuń obiekt i wypełnij tłem naturalnie"
+        self.saved_negative_prompt = "niska jakość, rozmycie, artefakty"
+        #===================================================================
 
         self.saved_preprocessor = 'inpaint_only'
         self.saved_modules = ['inpaint_only', 'inpaint_only+lama', 'none']
