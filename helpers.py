@@ -6,6 +6,8 @@ import numpy as np
 import cv2 as cv
 from PyQt5.QtGui import QPixmap, QPen, QColor, QBrush, QImage, QPainter, QCursor
 from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QFileDialog, QMessageBox
+from PIL import Image
 from criminisi import criminisi_inpaint
 from auto_inpaint import auto_inpaint
 
@@ -168,8 +170,6 @@ def on_tool_changed(self, index=None):
             self.view.viewport().setCursor(Qt.CrossCursor)
             
 def open_image(self):
-    from PyQt5.QtWidgets import QFileDialog, QMessageBox
-    from PIL import Image
     path, _ = QFileDialog.getOpenFileName(self, "Otwórz obraz", "", "Obrazy (*.png *.jpg *.jpeg *.bmp)")
     if path:
         try:
@@ -241,13 +241,15 @@ def set_image_and_mask_from_bytes(self, image_bytes: bytes, mask_bytes: bytes):
     set_image_from_bytes(self, image_bytes)
     set_mask_from_bytes(self, mask_bytes)
 
-
+#błąd, w ustawieniach, trzeba zaznaczyć używaj timestamp lub coś podobnego. Poprawione i działą poprawnie
 def save_image(self):
-    from PyQt5.QtWidgets import QFileDialog, QMessageBox
     if not self.image:
         QMessageBox.warning(self, "Błąd", "Brak obrazu do zapisania.")
         return
-    default_name = f"wynik_{get_timestamp()}.png" if self.saved_save_with_timestamp else "wynik.png"
+    if get_timestamp():
+        default_name = f"wynik_{get_timestamp()}.png" 
+    else:
+        default_name = 'wynik.png'
     path, _ = QFileDialog.getSaveFileName(self, "Zapisz obraz", default_name, "PNG (*.png);;JPG (*.jpg)")
     if path:
         self.image.save(path)

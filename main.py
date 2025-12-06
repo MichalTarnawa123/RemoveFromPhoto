@@ -9,6 +9,9 @@ import settings
 from shortcuts import SHORTCUTS
 from mouse import mousePressEvent, mouseMoveEvent, mouseReleaseEvent, enterEvent_logic, leaveEvent_logic
 from ui import setup_ui, RoundedButton
+import file_configurator
+import first_launch
+
 
 class LassoEraser(QMainWindow):
     def __init__(self):
@@ -55,6 +58,7 @@ class LassoEraser(QMainWindow):
         
         self.setup_ui()
         self.setup_shortcuts()
+
 
     def setup_ui(self):
         setup_ui(self)  #Funkcja z pliku ui.py
@@ -156,7 +160,22 @@ class LassoEraser(QMainWindow):
         
 
 if __name__ == "__main__":
+    #przed startem, sprawdzi czy mamy wszystkie biblioteki
+    try:
+        import first_launch
+        first_launch.check_dependencies()
+    except Exception as e:
+        print(f"Błąd sprawdzania biblioteki biblioteki: {e}")
+
+
+        
     app = QApplication(sys.argv)
     window = LassoEraser()
     window.show()
+
+    import file_configurator
+    file_configurator.load_from_file(window)
+    
     sys.exit(app.exec_())
+    
+    

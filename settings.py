@@ -4,6 +4,8 @@ from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QGroupBox, QFormLayout,
     QSlider, QPushButton, QCheckBox, QButtonGroup, QRadioButton, QMessageBox)
 from PyQt5.QtCore import Qt
 
+import file_configurator
+
 def open_settings(self):
     dialog = QDialog(self)
     dialog.setWindowTitle("Ustawienia SD + ControlNet")
@@ -469,9 +471,13 @@ def save_settings(self, dialog):
         self.saved_pixel_perfect = self.pixel_perfect_cb.isChecked()
         self.saved_lowvram = self.lowvram_cb.isChecked()
         
+                
         #unne
         self.saved_save_with_timestamp = self.timestamp_cb.isChecked()
         self.saved_sd_url = self.sd_url_edit.text().strip()
+
+        file_configurator.save_config(self)#self, bo settings jest już w window
+
         
         QMessageBox.information(dialog, "OK", "Ustawienia zapisane!")
         dialog.accept()
