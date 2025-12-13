@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QPixmap, QPen, QColor, QBrush, QKeySequence, QImage, QPainter, QCursor
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QBrush, QColor
 import helpers
 
 class RoundedButton(QPushButton):
@@ -19,10 +20,10 @@ class RoundedButton(QPushButton):
                     stop:1 #764ba2
                 );
                 color: white;
-                border-radius: 12px;
-                padding: 6px 16px;
-                font: bold 10pt "Segoe UI";
-                min-width: 70px;
+                border-radius: 15px;
+                padding: 10px 24px;
+                font: bold 12pt "Segoe UI";
+                min-width: 90px;
                 border: none;
             }
             QPushButton:hover {
@@ -43,21 +44,60 @@ class RoundedButton(QPushButton):
        
 def setup_ui(self):
     toolbar = QToolBar()
-    toolbar.setStyleSheet(f"""
-        QToolBar {{
+    toolbar.setMovable(False)#nie chcemy aby ruszać nim
+    #### PODSTAWOWE
+##    toolbar.setStyleSheet(f"""
+##        QToolBar {{
+##            background: qlineargradient(
+##                x1:0, y1:0, x2:0, y2:1,
+##                stop:0 {helpers.COLORS['toolbar_gradient_start']},
+##                stop:1 {helpers.COLORS['toolbar_gradient_end']}
+##            );
+##            spacing: 15px;
+##            padding: 10px;
+##        }}
+##    """)
+
+            #CHROME
+##    toolbar.setStyleSheet("""
+##        QToolBar {
+##            background: qlineargradient(
+##                x1:0, y1:0, x2:1, y2:0,
+##                stop:0 #1a1a2e,
+##                stop:0.5 #16213e,
+##                stop:1 #0f3460
+##            );
+##            border-bottom: 2px solid qlineargradient(
+##                x1:0, y1:0, x2:1, y2:0,
+##                stop:0 #e94560,
+##                stop:0.5 #f39c12,
+##                stop:1 #00d4ff
+##            );
+##            spacing: 15px;
+##            padding: 10px;
+##        }
+##    """)
+
+    toolbar.setStyleSheet("""
+        QToolBar {
             background: qlineargradient(
-                x1:0, y1:0, x2:1, y2:0,
-                stop:0 {helpers.COLORS['toolbar_gradient_start']},
-                stop:1 {helpers.COLORS['toolbar_gradient_end']}
+                x1:0, y1:0, x2:0, y2:1,
+                stop:0 #2c3e50,
+                stop:0.5 #34495e,
+                stop:1 #2c3e50
             );
-            spacing: 8px;
-            padding: 4px;
-        }}
+            border: 1px solid #1a252f;
+            border-top: 1px solid #4a5f7f;
+            spacing: 15px;
+            padding: 10px;
+        }
     """)
-    self.addToolBar(toolbar)
+    #self.addToolBar(toolbar)
+    self.addToolBar(Qt.LeftToolBarArea, toolbar)
     #===LABEL===#
+    label_style = "color: white; font-size: 12pt; font-weight: bold;"
     tool_label = QLabel("Narzędzie:")
-    tool_label.setStyleSheet("color: white;")
+    tool_label.setStyleSheet(label_style)
     toolbar.addWidget(tool_label)
     #===COMBOBOX Z WYBOREM===#
     self.tool_combo = QComboBox()
@@ -69,14 +109,16 @@ def setup_ui(self):
             color: white;
             background-color: #333333;
             border: 1px solid #555555;
-            padding: 4px 8px;
-            min-width: 90px;
+            padding: 8px 12px;
+            min-width: 110px;
+            min-height: 25px;
             font-weight: bold;
-            border-radius: 6px;
+            border-radius: 8px;
+            font: 11pt;
         }
         QComboBox::drop-down {
             border: 0;
-            width: 20px;
+            width: 30px;
         }
         QComboBox::down-arrow {
             width: 12px;
@@ -97,7 +139,7 @@ def setup_ui(self):
     toolbar.addSeparator()
     #===WYPEŁNIENIE===#
     fill_label = QLabel("Wypełnienie:")
-    fill_label.setStyleSheet("color: white;")
+    fill_label.setStyleSheet(label_style)
     toolbar.addWidget(fill_label)
     #===RODZAJE WYPEŁNIENIA===#
     self.fill_combo = QComboBox()
@@ -113,10 +155,12 @@ def setup_ui(self):
             color: white;
             background-color: #333333;
             border: 1px solid #555555;
-            padding: 4px 8px;
-            min-width: 120px;
+            padding: 8px 12px;
+            min-width: 110px;
+            min-height: 25px;
             font-weight: bold;
-            border-radius: 6px;
+            border-radius: 8px;
+            font: 11pt;
         }
         QComboBox::drop-down {
             border: 0;
@@ -153,45 +197,197 @@ def setup_ui(self):
         btn.clicked.connect(func)
         toolbar.addWidget(btn)
 
-    #===SUWAK PĘDZLNA===#
-    brush_container = QWidget()
-    brush_layout = QHBoxLayout(brush_container)
+##    #===SUWAK PĘDZLNA===#
+##    brush_container = QWidget()
+##    #Zamieńcie jak chcecie
+##    #brush_layout = QHBoxLayout(brush_container)
+##    brush_layout = QVBoxLayout(brush_container)
+##    brush_layout.setContentsMargins(0, 0, 0, 0)
+##    self.brush_label = QLabel("Pędzel")
+##    self.brush_label.setStyleSheet("color: white;")
+##    brush_layout.addWidget(self.brush_label)
+##    self.brush_value_label = QLabel("10")
+##    self.brush_value_label.setStyleSheet("color: white; min-width: 30px;")
+##    brush_layout.addWidget(self.brush_value_label)
+##    #self.brush_slider = QSlider(Qt.Horizontal)
+##    self.brush_slider = QSlider(Qt.Vertical)
+##    self.brush_slider.setRange(3, 100)
+##    self.brush_slider.setValue(10)
+##    self.brush_slider.setMinimumHeight(128)
+##    self.brush_slider.valueChanged.connect(self.on_brush_size_changed)
+##    brush_layout.addWidget(self.brush_slider)
+##    toolbar.addWidget(brush_container)
+##
+##    #===SUWAK ROZMIARU===#
+##    scale_container = QWidget()
+##    #scale_layout = QHBoxLayout(scale_container)
+##    scale_layout = QVBoxLayout(scale_container)
+##    scale_layout.setContentsMargins(0, 0, 0, 0)
+##    self.scale_label = QLabel("Skala (%)")
+##    self.scale_label.setStyleSheet("color: white;")
+##    scale_layout.addWidget(self.scale_label)
+##    self.scale_value_label = QLabel("100")
+##    self.scale_value_label.setStyleSheet("color: white; min-width: 40px;")
+##    scale_layout.addWidget(self.scale_value_label)
+##    self.scale_slider = QSlider(Qt.Vertical)
+##    self.scale_slider.setRange(10, 200)
+##    self.scale_slider.setValue(100)
+##    self.scale_slider.setMinimumHeight(128)
+##    self.scale_slider.valueChanged.connect(self.update_scale)
+##    scale_layout.addWidget(self.scale_slider)
+##    toolbar.addWidget(scale_container)
+
+        
+    #====KONTENER NA SUWAKI =====#
+
+    sliders_container = QWidget()
+    
+    sliders_layout = QHBoxLayout(sliders_container)
+    sliders_layout.setContentsMargins(0, 5, 0, 5)
+    sliders_layout.setSpacing(10)
+
+    #==== PĘDZEL ===###
+    brush_widget = QWidget()
+    brush_layout = QVBoxLayout(brush_widget)
     brush_layout.setContentsMargins(0, 0, 0, 0)
+    brush_layout.setAlignment(Qt.AlignCenter)
+
     self.brush_label = QLabel("Pędzel")
-    self.brush_label.setStyleSheet("color: white;")
+    self.brush_label.setStyleSheet(label_style)
+    self.brush_label.setAlignment(Qt.AlignCenter)
     brush_layout.addWidget(self.brush_label)
+
     self.brush_value_label = QLabel("10")
-    self.brush_value_label.setStyleSheet("color: white; min-width: 30px;")
+    self.brush_value_label.setStyleSheet(label_style)
+    self.brush_value_label.setAlignment(Qt.AlignCenter)
     brush_layout.addWidget(self.brush_value_label)
-    self.brush_slider = QSlider(Qt.Horizontal)
+
+##    self.brush_slider = QSlider(Qt.Vertical)
+##    self.brush_slider.setRange(3, 100)
+##    self.brush_slider.setValue(10)
+##    self.brush_slider.setMinimumHeight(130)
+##    self.brush_slider.valueChanged.connect(self.on_brush_size_changed)
+    self.brush_slider = QSlider(Qt.Vertical)
     self.brush_slider.setRange(3, 100)
     self.brush_slider.setValue(10)
+    self.brush_slider.setMinimumHeight(130)
+    self.brush_slider.setStyleSheet("""
+        QSlider::groove:vertical {
+            background: #2d2d2d;
+            width: 8px;
+            border-radius: 4px;
+        }
+        QSlider::sub-page:vertical {
+            background: transparent;
+            width: 8px;
+            border-radius: 4px;
+        }
+        QSlider::add-page:vertical {
+            background: qlineargradient(
+                x1:0, y1:0, x2:1, y2:0,
+                stop:0 #667eea,
+                stop:1 #764ba2
+            );
+            width: 8px;
+            border-radius: 4px;
+        }
+        QSlider::handle:vertical {
+            background: white;
+            border: 2px solid #667eea;
+            width: 18px;
+            height: 18px;
+            margin: 0 -5px;
+            border-radius: 9px;
+        }
+        QSlider::handle:vertical:hover {
+            background: qlineargradient(
+                x1:0, y1:0, x2:1, y2:0,
+                stop:0 #7b93f7,
+                stop:1 #8a5cb8
+            );
+            border: 2px solid white;
+        }
+    """)
     self.brush_slider.valueChanged.connect(self.on_brush_size_changed)
     brush_layout.addWidget(self.brush_slider)
-    toolbar.addWidget(brush_container)
 
-    #===SUWAK ROZMIARU===#
-    scale_container = QWidget()
-    scale_layout = QHBoxLayout(scale_container)
+    sliders_layout.addWidget(brush_widget)
+
+    #==== SKALA
+    scale_widget = QWidget()
+    scale_layout = QVBoxLayout(scale_widget)
     scale_layout.setContentsMargins(0, 0, 0, 0)
-    self.scale_label = QLabel("Skala (%)")
-    self.scale_label.setStyleSheet("color: white;")
+    scale_layout.setAlignment(Qt.AlignCenter)
+
+    self.scale_label = QLabel("Skala %")
+    self.scale_label.setStyleSheet(label_style)
+    self.scale_label.setAlignment(Qt.AlignCenter)
     scale_layout.addWidget(self.scale_label)
-    self.scale_value_label = QLabel("100")
-    self.scale_value_label.setStyleSheet("color: white; min-width: 40px;")
+
+    self.scale_value_label = QLabel("100%")
+    self.scale_value_label.setStyleSheet(label_style)
+    self.scale_value_label.setAlignment(Qt.AlignCenter)
     scale_layout.addWidget(self.scale_value_label)
-    self.scale_slider = QSlider(Qt.Horizontal)
+
+##    self.scale_slider = QSlider(Qt.Vertical)
+##    self.scale_slider.setRange(10, 200)
+##    self.scale_slider.setValue(100)
+##    self.scale_slider.setMinimumHeight(130)
+##    self.scale_slider.valueChanged.connect(self.update_scale)
+
+    self.scale_slider = QSlider(Qt.Vertical)
     self.scale_slider.setRange(10, 200)
     self.scale_slider.setValue(100)
+    self.scale_slider.setMinimumHeight(130)
+    self.scale_slider.setStyleSheet("""
+        QSlider::groove:vertical {
+            background: #2d2d2d;
+            width: 8px;
+            border-radius: 4px;
+        }
+        QSlider::sub-page:vertical {
+            background: transparent;
+            width: 8px;
+            border-radius: 4px;
+        }
+        QSlider::add-page:vertical {
+            background: qlineargradient(
+                x1:0, y1:0, x2:1, y2:0,
+                stop:0 #667eea,
+                stop:1 #764ba2
+            );
+            width: 8px;
+            border-radius: 4px;
+        }
+        QSlider::handle:vertical {
+            background: white;
+            border: 2px solid #667eea;
+            width: 18px;
+            height: 18px;
+            margin: 0 -5px;
+            border-radius: 9px;
+        }
+        QSlider::handle:vertical:hover {
+            background: qlineargradient(
+                x1:0, y1:0, x2:1, y2:0,
+                stop:0 #7b93f7,
+                stop:1 #8a5cb8
+            );
+            border: 2px solid white;
+        }
+    """)
     self.scale_slider.valueChanged.connect(self.update_scale)
     scale_layout.addWidget(self.scale_slider)
-    toolbar.addWidget(scale_container)
 
+    sliders_layout.addWidget(scale_widget)
+
+    toolbar.addWidget(sliders_container)
+    
 
     #===STATUS===#
     self.status_label = QLabel()
-    self.status_label.setFixedSize(20, 20)
-    self.status_label.setStyleSheet(f"background: {helpers.COLORS['status_idle']}; border-radius: 10px;")
+    self.status_label.setFixedSize(30, 30)
+    self.status_label.setStyleSheet(f"background: {helpers.COLORS['status_idle']}; border-radius: 15px;")
     toolbar.addWidget(self.status_label)
 
     #===INFORMACJA O STATUSIE===#
@@ -203,7 +399,76 @@ def setup_ui(self):
     #===CANVA===#
     #=== POTESTUJCIE NA WIĘKSZYCH OBRAZKACH NP. 16K===#
     self.scene = QGraphicsScene()
+    #SIATKA
+##    checkerboard = QBrush(QColor(30, 30, 30))
+##    self.scene.setBackgroundBrush(checkerboard)
+
     self.view = QGraphicsView(self.scene)
+    #OPCJA 1
+
+##    QGraphicsView {
+##        background-color: #1e1e1e;
+##        border: none;
+##    }
+    self.view.setStyleSheet("""
+        QGraphicsView {
+            background: qlineargradient(
+                x1:0, y1:0, x2:1, y2:1,
+                stop:0 #0f0c29,
+                stop:0.5 #302b63,
+                stop:1 #24243e
+            );
+            border: none;
+        }
+        QScrollBar:vertical {
+            background: #2d2d2d;
+            width: 14px;
+            border: none;
+        }
+        QScrollBar::handle:vertical {
+            background: qlineargradient(
+                x1:0, y1:0, x2:1, y2:0,
+                stop:0 #5568d3,
+                stop:1 #764ba2
+            );
+            border-radius: 7px;
+            min-height: 30px;
+        }
+        QScrollBar::handle:vertical:hover {
+            background: qlineargradient(
+                x1:0, y1:0, x2:1, y2:0,
+                stop:0 #667eea,
+                stop:1 #8a5cb8
+            );
+        }
+        QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+            height: 0px;
+        }
+        QScrollBar:horizontal {
+            background: #2d2d2d;
+            height: 14px;
+            border: none;
+        }
+        QScrollBar::handle:horizontal {
+            background: qlineargradient(
+                x1:0, y1:0, x2:0, y2:1,
+                stop:0 #5568d3,
+                stop:1 #764ba2
+            );
+            border-radius: 7px;
+            min-width: 30px;
+        }
+        QScrollBar::handle:horizontal:hover {
+            background: qlineargradient(
+                x1:0, y1:0, x2:0, y2:1,
+                stop:0 #667eea,
+                stop:1 #8a5cb8
+            );
+        }
+        QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+            width: 0px;
+        }
+    """)
     self.view.setDragMode(QGraphicsView.NoDrag)
     self.view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
     self.view.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
